@@ -8,9 +8,7 @@ using Newtonsoft.Json;
 
 namespace cli.Operations {
   public class PbixImporter : IRun {
-    private static readonly string GITIGNORE = ".gitignore";
-    private static readonly string[] BINARIES = { "DataModel", "SecurityBindings" };
-    
+
     public void Run(CliOptions opts) { 
       if (String.IsNullOrEmpty(opts.File)) throw new Exception($"the pbiximporter requires the -f file_name.pbix parameter");
       if (!File.Exists(opts.File)) { throw new FileNotFoundException($"could not find the specified pbix file \"{opts.File}\""); }
@@ -21,10 +19,10 @@ namespace cli.Operations {
     }
 
     private void CreateGitIgnoreFile(DirectoryInfo dir) { 
-      var path = Path.Combine(dir.FullName, GITIGNORE);
+      var path = Path.Combine(dir.FullName, Constants.GITIGNORE);
       if (File.Exists(path)) return;
       
-      var contents = String.Join("\n", BINARIES);
+      var contents = String.Join("\n", Constants.BINARIES);
       File.WriteAllText(path, contents);
     }
 
@@ -36,7 +34,7 @@ namespace cli.Operations {
     }
 
     private static bool IsValidSourceFile(FileInfo f) { 
-      if (BINARIES.Contains(f.Name) || f.Name == GITIGNORE) return false;
+      if (Constants.BINARIES.Contains(f.Name) || f.Name == Constants.GITIGNORE) return false;
       return String.IsNullOrEmpty(f.Extension) || f.Extension == ".json" || f.Extension == ".xml";
     }
 
