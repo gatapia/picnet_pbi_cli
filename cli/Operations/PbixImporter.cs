@@ -14,7 +14,7 @@ namespace cli.Operations {
     public void Run(CliOptions opts) { 
       if (String.IsNullOrEmpty(opts.File)) throw new Exception($"the pbiximporter requires the -f file_name.pbix parameter");
       if (!File.Exists(opts.File)) { throw new FileNotFoundException($"could not find the specified pbix file \"{opts.File}\""); }
-      var dir = Directory.CreateDirectory("src");
+      var dir = Directory.CreateDirectory(opts.Output ?? Constants.DEFAULT_SRC_DIR);
       ZipFile.ExtractToDirectory(opts.File, dir.FullName, true);
       CreateGitIgnoreFile(dir);
       FormatFiles(dir);
