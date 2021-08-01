@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "cli": {
+      "commandName": "Project",
+      "commandLineArgs": "import -f report.pbix",
+      "workingDirectory": "C:\\dev\\projects\\pbi_cli"
+    }
+  }
+}
