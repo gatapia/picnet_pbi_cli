@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Text;
-using cli.Dao;
 
 namespace cli.Operations {
   public class PbixExporter : IRun {
@@ -22,14 +20,14 @@ namespace cli.Operations {
           var name = f.FullName.Replace(dir.FullName + "\\", "");
           if (!PbixHelpers.IsValidSourceFile(f)) {
             Console.WriteLine($"adding binary entry [{name}]");
-            archive.CreateEntryFromFile(f.FullName, name, CompressionLevel.Optimal);
+            archive.CreateEntryFromFile(f.FullName, name);
             return;
           }
           var contents = File.ReadAllText(f.FullName, Encoding.UTF8);
           contents = PbixHelpers.FormatFileContentsImpl(f, contents, false);
           var encoder = PbixHelpers.GetFileEncoding(f);
 
-          var entry = archive.CreateEntry(name, CompressionLevel.Optimal);
+          var entry = archive.CreateEntry(name);
           using var stream = entry.Open();
           using var writer = new StreamWriter(stream, encoder);
 

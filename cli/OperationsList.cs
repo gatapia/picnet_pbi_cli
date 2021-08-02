@@ -5,6 +5,7 @@ namespace cli {
     public static readonly Operation[] Operations = {
       new Operation {Op = "import", Impl = new PbixImporter() },
       new Operation {Op = "export", Impl = new PbixExporter() },
+      new Operation {Op = "debug", Impl = new PbixDebugger() },
     };
   }
 }
