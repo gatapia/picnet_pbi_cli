@@ -3,8 +3,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using System.Xml.Linq;
-using Newtonsoft.Json;
 
 namespace cli.Operations {
   public class PbixImporter : IRun {
@@ -28,29 +26,15 @@ namespace cli.Operations {
 
     private void FormatFiles(DirectoryInfo dir) { 
       dir.GetFiles("*.*", SearchOption.AllDirectories).
-          Where(IsValidSourceFile).
+          Where(PbixHelpers.IsValidSourceFile).
           ToList().
           ForEach(f => File.WriteAllText(f.FullName, FormatFileContents(f), Encoding.UTF8));
     }
 
-    private static bool IsValidSourceFile(FileInfo f) { 
-      if (Constants.BINARIES.Contains(f.Name) || f.Name == Constants.GITIGNORE) return false;
-      return String.IsNullOrEmpty(f.Extension) || f.Extension == ".json" || f.Extension == ".xml";
-    }
-
     private string FormatFileContents(FileInfo f) {
-      Console.WriteLine($"formatting file [{f.Name}]");
-      try { 
-        return FormatFileContentsImpl(f, File.ReadAllText(f.FullName, Encoding.Unicode)); 
-      } catch {
-        return FormatFileContentsImpl(f, File.ReadAllText(f.FullName, Encoding.UTF8));
-      }
-    }
-
-    private static string FormatFileContentsImpl(FileInfo f, string contents) {
-      return f.Extension == ".xml" ?
-        XDocument.Parse(contents).ToString(SaveOptions.None) :
-        JsonConvert.SerializeObject(JsonConvert.DeserializeObject(contents), Formatting.Indented);
+      var encoder = PbixHelpers.GetFileEncoding(f);
+      var contents = File.ReadAllText(f.FullName, encoder);
+      return PbixHelpers.FormatFileContentsImpl(f, contents, true);
     }
   }
 }

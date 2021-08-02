@@ -15,26 +15,32 @@ namespace cli.Operations {
       if (!dir.Exists) { throw new FileNotFoundException($"could not find the specified source directory \"{dir.Name}\""); }
       
       if (File.Exists(opts.Output)) File.Delete(opts.Output);
-      ZipFile.CreateFromDirectory(dir.FullName, opts.Output, CompressionLevel.Optimal, false);
-      if (1==1) return;
+      
       using (var archive = ZipFile.Open(opts.Output, ZipArchiveMode.Create)) {
         Array.ForEach(dir.GetFiles("*.*", SearchOption.AllDirectories), f => {
           if (f.Name == Constants.GITIGNORE) return;
-          if (Constants.BINARIES.Contains(f.Name)) {
-            archive.CreateEntryFromFile(f.FullName, f.Name);
+          var name = f.FullName.Replace(dir.FullName + "\\", "");
+          if (!PbixHelpers.IsValidSourceFile(f)) {
+            Console.WriteLine($"adding binary entry [{name}]");
+            archive.CreateEntryFromFile(f.FullName, name, CompressionLevel.Optimal);
             return;
           }
-          var entry = archive.CreateEntry(f.Name);
-
-          using var stream = entry.Open();
-          using var writer = new StreamWriter(stream);
-          
           var contents = File.ReadAllText(f.FullName, Encoding.UTF8);
-          var encoded = Encoding.Unicode.GetBytes(contents);
-          writer.Write(encoded);
+          contents = PbixHelpers.FormatFileContentsImpl(f, contents, false);
+          var encoder = PbixHelpers.GetFileEncoding(f);
+
+          var entry = archive.CreateEntry(name, CompressionLevel.Optimal);
+          using var stream = entry.Open();
+          using var writer = new StreamWriter(stream, encoder);
+
+          // var encoded = encoder.GetBytes(contents);
+          Console.WriteLine($"adding text entry [{name}] encoding [{encoder.GetType().Name}]");
+          writer.Write(contents);
         });
       }
       Console.WriteLine($"pbix file [{opts.Output}] created");
+      Directory.Delete(opts.Output + "dir", true);
+      ZipFile.ExtractToDirectory(opts.Output, opts.Output + "dir");
     }
   }
 }
