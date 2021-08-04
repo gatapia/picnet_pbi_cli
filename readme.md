@@ -2,6 +2,13 @@
 
 This is a set of tools to make working collaboratively on Power BI projects simpler.
 
+## Warning
+- Backup your pbix files regularly.  All commands below are destructive and any crashes could result in corrupt pbix files.
+- Due to the size of DataModel files, these are added to .gitignore files by default.  This means that checking out the code
+  on a computer with no DataModel files will fail to export a valid pbix file.  You can modify the default .gitignore file
+  and add a small model to your git repo if you would like a self contained repo.
+
+
 ## Overview
 
 Unfortunately the Power BI `pbix` file format is a binary file format making it incompatible with:
@@ -11,7 +18,14 @@ Unfortunately the Power BI `pbix` file format is a binary file format making it 
 - general text editors
 
 However, the file itself is just a zip file.  Using this fact we can simply extract the file contents and
-work with the "source" json files.
+work with the "source" json files.  Once the source files are available all tasks above can be done and better
+development practices can be followed.
+
+### Additional Benefits
+
+Working directory with the source files has some additional benefits, a small set of examples follows:
+- Search and replace in the `Report/Layout` file allows quick rename of visual labels/titles
+
 
 ## Supported Arguments
 
