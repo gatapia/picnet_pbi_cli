@@ -10,29 +10,35 @@ namespace cli.Operations {
 
     public void Run(CliOptions opts) 
     { 
-      if (String.IsNullOrEmpty(opts.Output)) throw new Exception("the pbiximporter requires the -o file_name.pbix parameter");
+      if (String.IsNullOrEmpty(opts.Output)) throw new Exception("the export command requires the -o file_name.pbix parameter");
 
       var dir = new DirectoryInfo(opts.File ?? Constants.DEFAULT_SRC_DIR);
       if (!dir.Exists) { throw new FileNotFoundException($"could not find the specified source directory \"{dir.Name}\""); }
       
       if (File.Exists(opts.Output)) File.Delete(opts.Output);
+      var datamodel = Path.Combine(dir.FullName, "DataModel");
+      if (File.Exists(datamodel)) File.Delete(datamodel);
+      File.Copy(Path.Combine(dir.FullName, "data", opts.DataModelName), datamodel);
 
       using var archive = new ZipFile(opts.Output);
       dir.GetFiles("*.*", SearchOption.AllDirectories).
           Where(f => f.Name != Constants.GITIGNORE).
+          Where(f => f.Directory?.Name != Constants.DATA_DIR).
           ToList().
           ForEach(f => {
         var name = f.FullName.Replace(dir.FullName + "\\", "");
         Console.WriteLine($"adding file to archive [{name}]");
 
         if (PbixHelpers.IsValidSourceFile(f)) { AddSourceFileToArchive(f, archive, name); }
-        else { AddBinaryFileToArchive(name, archive, f, dir); }
+        else { AddBinaryFileToArchive(archive, f, dir); }
       });
       archive.Save();
+      File.Delete(datamodel);
+
       Console.WriteLine($"pbix file [{opts.Output}] created");
     }
 
-    private static void AddBinaryFileToArchive(string name, ZipFile archive, FileInfo f, DirectoryInfo dir)
+    private static void AddBinaryFileToArchive(ZipFile archive, FileInfo f, DirectoryInfo dir)
     {
       archive.AddFile(f.FullName, f.Directory?.FullName.Replace(dir.FullName, ""));
     }

@@ -7,9 +7,8 @@ namespace cli.Operations {
   public class PbixDebugger : IRun {
 
     public void Run(CliOptions opts) { 
-      if (String.IsNullOrEmpty(opts.File)) throw new Exception($"the pbiximporter requires the -f file_name.pbix parameter");
+      if (String.IsNullOrEmpty(opts.File)) throw new Exception("the debug command requires the -f file_name.pbix parameter");
       if (!File.Exists(opts.File)) { throw new FileNotFoundException($"could not find the specified pbix file \"{opts.File}\""); }
-      var dir = Directory.CreateDirectory(opts.Output ?? Constants.DEFAULT_SRC_DIR);
       using var archive = ZipFile.Open(opts.File, ZipArchiveMode.Read);
       Console.WriteLine($"archive [{opts.File}] mode[{archive.Mode}] entries[{archive.Entries.Count}]");
       Console.WriteLine("Name\tAttributes\tCompressed\tCrc32\tLength");

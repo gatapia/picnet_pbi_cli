@@ -1,1 +1,1 @@
-"cli\bin\Debug\net5.0\cli.exe" %*
+"cli\bin\Debug\net5.0\win-x64\cli.exe" %*
