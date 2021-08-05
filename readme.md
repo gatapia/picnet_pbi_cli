@@ -1,9 +1,6 @@
-# TODO
-- The Layout json file (and perhaps other) have embedded json strings, find a better way of supporting this
-
 # PicNet Power BI Command Line Tools
 
-This is a set of tools to make working collaboratively on Power BI projects simpler.
+This is a set of command line tools to make working collaboratively on Power BI projects simpler.
 
 ## Warning
 - Backup your pbix files regularly.  All commands below are destructive and any crashes could result in corrupt pbix files.
@@ -11,9 +8,7 @@ This is a set of tools to make working collaboratively on Power BI projects simp
   on a computer with no DataModel files will fail to export a valid pbix file.  You can modify the default .gitignore file
   and add a small model to your git repo if you would like a self contained repo.
 
-
 ## Overview
-
 Unfortunately the Power BI `pbix` file format is a binary file format making it incompatible with:
 - version control tools
 - diff/merge tools
@@ -24,20 +19,13 @@ However, the file itself is just a zip file.  Using this fact we can simply extr
 work with the "source" json files.  Once the source files are available all tasks above can be done and better
 development practices can be followed.
 
-### Additional Benefits
+## Supported Opperations
 
-Working directory with the source files has some additional benefits, a small set of examples follows:
-- Search and replace in the `Report/Layout` file allows quick rename of visual labels/titles
-
-
-## Supported Arguments
-
+### Global Supported Arguments
 - `-f` The filename of the report to import or the destination report to overwrite during export
 - `-d` The output directory when importing or source directory when exporting
-- `-m` The name of the DataModel file to use.  This is good two swap between a small DataModel for development and
-  a larger more complete DataModel for testing.
-
-## Supported Opperations
+- `-m` The name of the DataModel file to use.  This allows swapping between a small DataModel for development and
+  a larger more complete DataModel for testing and deployment.
 
 ### Import PBIX File
 `pbi import -f <pbix-filename> -d <source-dir> -m <data-model>`
@@ -47,7 +35,8 @@ Where:
 - data-model [optional="default"]: the alias to use for this data model 
 
 Importing a PBIX file does the following:
-- Creates the output directory if required.  This is specified using the `-o` argument (defaults to `src`)
+- Creates the output directory if required (otherwise overwrites the existing directory).  This directory is specified 
+    using the `-o` argument (defaults to `src`)
 - Creates a `data` directory in the output directory if required.  This directory is used to store the reports DataModel files.
 - Extracts the contents of the PBIX file to the output directory
 - Formats all JSON files to make it easier to read
@@ -99,3 +88,7 @@ Analyzes the current running report using the internal SSAS database and the spe
 ### Debug PBIX File
 `pbi debug -f <pbix-filename>`
 This command will list the pbix file contents and some useful information about each file
+
+
+## TODO
+- The Layout json file (and perhaps other) have embedded json strings, find a better way of supporting this
