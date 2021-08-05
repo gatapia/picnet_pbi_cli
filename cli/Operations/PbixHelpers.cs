@@ -10,7 +10,7 @@ namespace cli.Operations
   {
     public static bool IsValidSourceFile(FileInfo f)
     {
-      if (Constants.BINARIES.Contains(f.Name) || f.Name == Constants.GITIGNORE) return false;
+      if (Constants.BINARIES.Contains(f.Name) || f.Name == Constants.GITIGNORE || f.Directory?.Name == "data") return false;
       return String.IsNullOrEmpty(f.Extension) || f.Extension == ".json" || f.Extension == ".xml";
     }
 
