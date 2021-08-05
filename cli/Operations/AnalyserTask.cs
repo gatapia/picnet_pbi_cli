@@ -14,9 +14,8 @@ namespace cli.Operations {
     };
 
     public void Run(CliOptions opts) {
-      var dir = opts.File ?? Constants.DEFAULT_SRC_DIR;
-      var layoutfile = Path.Combine(dir, "Report", "Layout");
-      if (!File.Exists(layoutfile)) throw new Exception($"the specified directory '{dir}' does not contain the expected Report\\Layout file");
+      var layoutfile = Path.Combine(opts.Dir, "Report", "Layout");
+      if (!File.Exists(layoutfile)) throw new Exception($"the specified directory '{opts.Dir}' does not contain the expected Report\\Layout file");
       var layout = File.ReadAllText(layoutfile);
       var runningpbis = GetSsasPortsAndDb();
       if (!runningpbis.Any()) throw new ApplicationException("no running Power BI instances found.  Please start the report that matches the code in the current directory.");

@@ -1,6 +1,4 @@
 # TODO
-- clear up options, input / output dont make sense, make it file and dir where file is input or output pbix file and dir
-    is the source dir
 - The Layout json file (and perhaps other) have embedded json strings, find a better way of supporting this
 
 # PicNet Power BI Command Line Tools
@@ -34,15 +32,15 @@ Working directory with the source files has some additional benefits, a small se
 
 ## Supported Arguments
 
-- `-f` The filename of the report to import
-- `-o` The output directory (when importing) or filename (when exporting)
-- `-d` The name of the DataModel file to use.  This is good two swap between a small DataModel for development and
+- `-f` The filename of the report to import or the destination report to overwrite during export
+- `-d` The output directory when importing or source directory when exporting
+- `-m` The name of the DataModel file to use.  This is good two swap between a small DataModel for development and
   a larger more complete DataModel for testing.
 
 ## Supported Opperations
 
 ### Import PBIX File
-`pbi import -f <pbix-filename> -o <source-dir> -d <data-model>`
+`pbi import -f <pbix-filename> -d <source-dir> -m <data-model>`
 Where:
 - pbix-filename [required]: the name of the file to import
 - source-dir [optional="src"]: the name of the directory to extract the pbix contents into
@@ -62,7 +60,7 @@ Importing a PBIX file does the following:
 I.e. importing a pbix will overwrite the contents of the output directory with what ever is in the pbix file.
 
 ### Export PBIX File
-`pbi export -f <source-dir> -o <pbix-filename> -d <data-model>`
+`pbi export -d <source-dir> -f <pbix-filename> -m <data-model>`
 Where:
 - source-dir [optional="src"]: the name of the directory to extract the pbix contents into
 - pbix-filename [required]: the name of the file to import
@@ -74,7 +72,7 @@ This command creates a `pbix` file from the specified `source-dir`.  This file c
 I.e. importing a pbix will overwrite the contents of the output directory with what ever is in the pbix file.
 
 ### Extract Data Model
-`pbi data -f <pbix-filename> -o <source-dir> -d <data-model>`
+`pbi data -f <pbix-filename> -d <source-dir> -d <data-model>`
 Where:
 - pbix-filename [required]: the name of the file to import
 - source-dir [optional="src"]: the name of the directory to extract the pbix contents into
@@ -82,6 +80,20 @@ Where:
 
 Extracts the `DataModel` file from the specified `pbix` file and saves it in the `source-dir\data` directory with the
 specified `data-model` alias name.
+
+### Analyze Running Report
+`pbi analyze -d <source-dir>`
+Where:
+- source-dir [optional="src"]: the name of the directory to extract the pbix contents into
+
+Analyzes the current running report using the internal SSAS database and the specified `source-dir`.  This analysis includes:
+- lists all measures
+- lists unused measures
+- lists duplicate measures
+
+**Note**: The analyze task requires that a single running Power BI report be running.  It is the SSAS database
+  of this running report that is analyzed.
+
 
 
 ### Debug PBIX File

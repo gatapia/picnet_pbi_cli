@@ -10,17 +10,17 @@ namespace cli.Operations {
 
     public void Run(CliOptions opts) 
     { 
-      if (String.IsNullOrEmpty(opts.Output)) throw new Exception("the export command requires the -o file_name.pbix parameter");
+      if (String.IsNullOrEmpty(opts.Dir)) throw new Exception("the export command requires the -o file_name.pbix parameter");
 
-      var dir = new DirectoryInfo(opts.File ?? Constants.DEFAULT_SRC_DIR);
+      var dir = new DirectoryInfo(opts.Dir);
       if (!dir.Exists) { throw new FileNotFoundException($"could not find the specified source directory \"{dir.Name}\""); }
       
-      if (File.Exists(opts.Output)) File.Delete(opts.Output);
+      if (File.Exists(opts.File)) File.Delete(opts.File);
       var datamodel = Path.Combine(dir.FullName, "DataModel");
       if (File.Exists(datamodel)) File.Delete(datamodel);
       File.Copy(Path.Combine(dir.FullName, "data", opts.DataModelName), datamodel);
 
-      using var archive = new ZipFile(opts.Output);
+      using var archive = new ZipFile(opts.File);
       dir.GetFiles("*.*", SearchOption.AllDirectories).
           Where(f => f.Name != Constants.GITIGNORE).
           Where(f => f.Directory?.Name != Constants.DATA_DIR).
@@ -35,7 +35,7 @@ namespace cli.Operations {
       archive.Save();
       File.Delete(datamodel);
 
-      Console.WriteLine($"pbix file [{opts.Output}] created");
+      Console.WriteLine($"pbix file [{opts.File}] created");
     }
 
     private static void AddBinaryFileToArchive(ZipFile archive, FileInfo f, DirectoryInfo dir)
