@@ -1,3 +1,8 @@
+# TODO
+- clear up options, input / output dont make sense, make it file and dir where file is input or output pbix file and dir
+    is the source dir
+- The Layout json file (and perhaps other) have embedded json strings, find a better way of supporting this
+
 # PicNet Power BI Command Line Tools
 
 This is a set of tools to make working collaboratively on Power BI projects simpler.
