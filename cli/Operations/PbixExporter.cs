@@ -14,8 +14,12 @@ namespace cli.Operations {
 
       var dir = new DirectoryInfo(opts.Dir);
       if (!dir.Exists) { throw new FileNotFoundException($"could not find the specified source directory \"{dir.Name}\""); }
-      
-      if (File.Exists(opts.File)) File.Delete(opts.File);
+
+      if (File.Exists(opts.File)) {
+        var backup = Directory.CreateDirectory(Path.Combine(dir.FullName, "backups"));
+        BackupPbixFile(opts.File, backup.FullName);
+        File.Delete(opts.File);
+      }
       var datamodel = Path.Combine(dir.FullName, "DataModel");
       if (File.Exists(datamodel)) File.Delete(datamodel);
       File.Copy(Path.Combine(dir.FullName, "data", opts.DataModelName), datamodel);
@@ -38,6 +42,17 @@ namespace cli.Operations {
       Console.WriteLine($"pbix file [{opts.File}] created");
     }
 
+    private void BackupPbixFile(string file, string dir)
+    {
+
+      var name = new FileInfo(file).Name;
+      var path = Path.Combine(dir, name.Replace(".pbix", $"_{DateTime.Now:yyyyMMdd HHmm}.pbix"));
+      File.Delete(path);
+      File.Copy(file, path);
+
+      new DirectoryInfo(dir).GetFiles("*.pbix").Where(f => (DateTime.Now - f.CreationTime).TotalDays > 5).ToList().ForEach(f => f.Delete());
+    }
+	
     private static void AddBinaryFileToArchive(ZipFile archive, FileInfo f, DirectoryInfo dir)
     {
       archive.AddFile(f.FullName, f.Directory?.FullName.Replace(dir.FullName, ""));

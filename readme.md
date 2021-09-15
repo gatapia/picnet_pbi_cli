@@ -7,7 +7,7 @@ This is a set of command line tools to make working collaboratively on Power BI 
 - Due to the size of DataModel files, these are added to .gitignore files by default.  This means that checking out the code
   on a computer with no DataModel files will fail to export a valid pbix file.  You can modify the default .gitignore file
   and add a small model to your git repo if you would like a self contained repo.
-- `pbi.exe` also creates a backup every time you do a `pbi import`.  These backups are stored in the \<output directory>`\backups` 
+- `pbi.exe` also creates a backup every time you do a `pbi export`.  These backups are stored in the \<output directory>`\backups` 
   folder and are stored for five days.
 
 ## Installation
