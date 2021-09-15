@@ -18,8 +18,8 @@ namespace cli.Operations {
       if (!File.Exists(layoutfile)) throw new Exception($"the specified directory '{opts.Dir}' does not contain the expected Report\\Layout file");
       var layout = File.ReadAllText(layoutfile);
       var runningpbis = GetSsasPortsAndDb();
-      if (!runningpbis.Any()) throw new ApplicationException("no running Power BI instances found.  Please start the report that matches the code in the current directory.");
-      if (runningpbis.Count() > 1) throw new ApplicationException("multiple running Power BI instances found.  Please ensure only the single report that matches the code in the current directory is running.");
+      if (!runningpbis.Any()) throw new Exception("no running Power BI instances found.  Please start the report that matches the code in the current directory.");
+      if (runningpbis.Count() > 1) throw new Exception("multiple running Power BI instances found.  Please ensure only the single report that matches the code in the current directory is running.");
       var pbi = runningpbis.Single();
       
       new Analyse(pbi.port, pbi.dbname, layout).Go();
