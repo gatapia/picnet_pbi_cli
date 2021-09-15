@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,8 +6,18 @@
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <PublishTrimmed>true</PublishTrimmed>
+    <PublishDir>publish</PublishDir>
+    <PublishTrimmed>false</PublishTrimmed>
     <PublishReadyToRun>true</PublishReadyToRun>
+    <PublishProtocol>FileSystem</PublishProtocol>
+    <DebugType>embedded</DebugType>
+
+    <Company>PicNet Pty Ltd</Company>
+    <Authors>Guido Tapia</Authors>
+    <Product>PicNet Power BI Command Line Tools</Product>
+    <Deterministic>false</Deterministic>
+    <AssemblyVersion>0.1.*</AssemblyVersion>
+    <Copyright>Copyright © 2021</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

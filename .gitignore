@@ -2,3 +2,4 @@
 *.pbixdir/
 src/
 debug.log
+cli/publish/

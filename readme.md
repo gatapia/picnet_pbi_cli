@@ -92,3 +92,4 @@ This command will list the pbix file contents and some useful information about 
 
 ## TODO
 - The Layout json file (and perhaps other) have embedded json strings, find a better way of supporting this
+- Automatically backup pbix files before any destructive command?  Could become very big, perhaps only keep x-days
