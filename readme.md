@@ -7,6 +7,13 @@ This is a set of command line tools to make working collaboratively on Power BI 
 - Due to the size of DataModel files, these are added to .gitignore files by default.  This means that checking out the code
   on a computer with no DataModel files will fail to export a valid pbix file.  You can modify the default .gitignore file
   and add a small model to your git repo if you would like a self contained repo.
+- `pbi.exe` also creates a backup every time you do a `pbi import`.  These backups are stored in the \<output directory>`\backups` 
+  folder and are stored for five days.
+
+## Installation
+The simplest way to install this command line tool is to download the 
+[pbi.exe](https://github.com/gatapia/picnet_pbi_cli/raw/master/pbi.exe) file from this repository, save it in an  
+appropriate location and add that to location your path.
 
 ## Overview
 Unfortunately the Power BI `pbix` file format is a binary file format making it incompatible with:
@@ -95,4 +102,3 @@ This command will list the pbix file contents and some useful information about 
 
 ## TODO
 - The Layout json file (and perhaps other) have embedded json strings, find a better way of supporting this
-- Automatically backup pbix files before any destructive command?  Could become very big, perhaps only keep x-days

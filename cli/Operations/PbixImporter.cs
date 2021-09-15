@@ -11,20 +11,32 @@ namespace cli.Operations {
       if (String.IsNullOrEmpty(opts.File)) throw new Exception($"the import command requires the -f file_name.pbix parameter");
       if (!File.Exists(opts.File)) { throw new FileNotFoundException($"could not find the specified pbix file \"{opts.File}\""); }
       var dir = Directory.CreateDirectory(opts.Dir);
+      var backup = Directory.CreateDirectory(Path.Combine(dir.FullName, "backups"));
+      BackupPbixFile(opts.File, backup.FullName);
 
       ZipFile.ExtractToDirectory(opts.File, dir.FullName, true);
       CreateGitIgnoreFile(dir);
       FormatFiles(dir);
       MoveDataModelFile(dir, opts.DataModelName);
+
+      DeleteExpiredBackupFiles(backup.FullName);
       
       Console.WriteLine($"source directory [{dir.Name}] created and all PBIX files extracted");
+    }
+
+    private void BackupPbixFile(string file, string dir) { 
+      
+      var name = new FileInfo(file).Name;
+      var path = Path.Combine(dir, name.Replace(".pbix", $"_{DateTime.Now:yyyyMMdd HHmm}.pbix"));
+      File.Delete(path);
+      File.Copy(file, path);
     }
 
     private void CreateGitIgnoreFile(DirectoryInfo dir) { 
       var path = Path.Combine(dir.FullName, Constants.GITIGNORE);
       if (File.Exists(path)) return;
       
-      var contents = String.Join("\n", Constants.BINARIES) + "\ndata\\";
+      var contents = String.Join("\n", Constants.BINARIES) + "\ndata\\\nbackups\\";
       File.WriteAllText(path, contents);
     }
 
@@ -47,6 +59,10 @@ namespace cli.Operations {
       var dest = Path.Combine(datadir.FullName, name);
       if (File.Exists(dest)) File.Delete(dest);
       File.Move(Path.Combine(dir.FullName, "DataModel"), dest);
+    }
+
+    private void DeleteExpiredBackupFiles(string dir) { 
+      new DirectoryInfo(dir).GetFiles("*.pbix").Where(f => (DateTime.Now - f.CreationTime).TotalDays > 5).ToList().ForEach(f => f.Delete());
     }
   }
 }
