@@ -6,13 +6,14 @@ using System.Text;
 using cli.Operations.Analyser;
 
 namespace cli.Operations {
-  [Operation("analyze")]
   public class AnalyserTask : IRun {
 
     private static readonly string[] PBI_DIRS = {
       @"C:\Users\guidot\AppData\Local\Microsoft\Power BI Desktop\AnalysisServicesWorkspaces",
       @"C:\Users\guidot\AppData\Local\Microsoft\Power BI Desktop SSRS\AnalysisServicesWorkspaces"
     };
+
+    public string Command => "analyze";
 
     public void Run(CliOptions opts) {
       var layoutfile = Path.Combine(opts.Dir, "Report", "Layout");

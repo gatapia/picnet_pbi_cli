@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text;
 
 namespace cli.Operations {
-  [Operation("import")]
   public class PbixImporter : IRun {
+    public string Command => "import";
 
     public void Run(CliOptions opts) { 
       if (String.IsNullOrEmpty(opts.File)) throw new Exception($"the import command requires the -f file_name.pbix parameter");

@@ -4,8 +4,8 @@ using System.IO.Compression;
 using System.Linq;
 
 namespace cli.Operations {
-  [Operation("debug")]
   public class PbixDebugger : IRun {
+    public string Command => "debug";
 
     public void Run(CliOptions opts) { 
       if (String.IsNullOrEmpty(opts.File)) throw new Exception("the debug command requires the -f file_name.pbix parameter");

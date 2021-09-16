@@ -11,11 +11,10 @@ namespace cli
 
     private static void Run(CliOptions opts) {
       var operations = Assembly.GetExecutingAssembly().GetTypes().
-          Where(t => t.GetCustomAttribute<OperationAttribute>() != null).
-          ToDictionary(t => t.GetCustomAttribute<OperationAttribute>()?.Command, t => t);
-      var type = operations[opts.Operation];
-      var op = (IRun) Activator.CreateInstance(type);
-      op?.Run(opts);
+          Where(t => typeof(IRun).IsAssignableFrom(t)).
+          Select(t => (IRun) Activator.CreateInstance(t)).
+          ToDictionary(r => r?.Command, r => r);
+      operations[opts.Operation].Run(opts);
     }
   }
 }
