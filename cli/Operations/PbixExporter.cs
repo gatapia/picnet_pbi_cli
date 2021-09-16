@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Ionic.Zip;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
 
 namespace cli.Operations {
   public class PbixExporter : IRun 
@@ -63,7 +60,10 @@ namespace cli.Operations {
       var contents = File.ReadAllText(f.FullName, Encoding.UTF8);
       var deserializer = new DeserializerBuilder().Build();
       var yaml = deserializer.Deserialize<dynamic>(contents);
-      var json = JsonConvert.SerializeObject(yaml, Formatting.None, new YamlToJsonConverter());
+      // these regex replacements are much simpler than using custom converter
+      var json = JsonConvert.SerializeObject(yaml, Formatting.None);
+      json = Regex.Replace(json, "\\\"([0-9.]+)\\\"", "$1");
+      json = Regex.Replace(json, @"\n\s*", "");
       var encoder = PbixHelpers.GetFileEncoding(f);
       var bytes = encoder.GetBytes(json);
       archive.AddEntry(name.Replace(".yaml", ""), bytes);
@@ -83,19 +83,4 @@ namespace cli.Operations {
       archive.AddFile(f.FullName, f.Directory?.FullName.Replace(dir.FullName, ""));
     }
   }
-
-  public class YamlToJsonConverter : JsonConverter<string>
-  {
-    public override void WriteJson(JsonWriter writer, string value, JsonSerializer serializer) {
-      if (!(value is string str)) { throw new Exception(); }
-
-      if (str.IndexOf("\n", StringComparison.Ordinal) >= 0) { str = Regex.Replace(str, @"\n\s+", ""); }
-      new JValue(str).WriteTo(writer);
-    }
-
-    public override string ReadJson(JsonReader reader, Type objectType, string existingValue, bool hasExistingValue, JsonSerializer serializer) {
-      throw new NotImplementedException();
-    }
-  }
-
 }
