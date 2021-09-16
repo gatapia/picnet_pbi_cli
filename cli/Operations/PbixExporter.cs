@@ -16,7 +16,7 @@ namespace cli.Operations {
       if (!dir.Exists) { throw new FileNotFoundException($"could not find the specified source directory \"{dir.Name}\""); }
 
       if (File.Exists(opts.File)) {
-        var backup = Directory.CreateDirectory(Path.Combine(dir.FullName, "backups"));
+        var backup = Directory.CreateDirectory(Path.Combine(dir.FullName, Constants.BACKUP_DIR));
         BackupPbixFile(opts.File, backup.FullName);
         File.Delete(opts.File);
       }
@@ -27,7 +27,7 @@ namespace cli.Operations {
       using var archive = new ZipFile(opts.File);
       dir.GetFiles("*.*", SearchOption.AllDirectories).
           Where(f => f.Name != Constants.GITIGNORE).
-          Where(f => f.Directory?.Name != Constants.DATA_DIR).
+          Where(f => f.Directory?.Name != Constants.DATA_DIR && f.Directory?.Name != Constants.BACKUP_DIR).
           ToList().
           ForEach(f => {
         var name = f.FullName.Replace(dir.FullName + "\\", "");
