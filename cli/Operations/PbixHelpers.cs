@@ -35,11 +35,14 @@ namespace cli.Operations
 
     public static string ConvertJsonToYaml(string contents) { 
       var json = ConvertJTokenToObject(JsonConvert.DeserializeObject<JToken>(contents));
-      var serializer = new SerializerBuilder().Build();
-      return serializer.Serialize(json);
+      return new SerializerBuilder().Build().Serialize(json);
     }
 
     static object ConvertJTokenToObject(JToken token) {
+      object GetFormattedValue(object v) =>
+        v is not string str || !str.StartsWith('{') ? v
+            : JsonConvert.SerializeObject(JsonConvert.DeserializeObject(str), Formatting.Indented).Replace("\r\n", "\n");
+      
       return token switch {
           JValue value => GetFormattedValue(value.Value),
           JArray => token.AsEnumerable().Select(ConvertJTokenToObject).ToList(),
@@ -48,12 +51,6 @@ namespace cli.Operations
               .ToDictionary(x => x.Name, x => ConvertJTokenToObject(x.Value)),
           _ => throw new InvalidOperationException("Unexpected token: " + token)
       };
-    }
-
-    private static object GetFormattedValue(object v) { 
-      if (v is not string str || !str.StartsWith('{')) { return v; }
-      var formatted = JsonConvert.SerializeObject(JsonConvert.DeserializeObject(str), Formatting.Indented);
-      return formatted.Replace("\r\n", "\n");
     }
   }
 }

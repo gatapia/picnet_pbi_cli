@@ -6,5 +6,7 @@ namespace cli.Operations {
     public static readonly string BACKUP_DIR = "backups";
     public static readonly string GITIGNORE = ".gitignore";
     public static readonly List<string> BINARIES = new() { "DataModel", "SecurityBindings" };
+    
+    public static readonly bool USE_YAML_FOR_EMBEDDED_JSON = true;
   }
 }

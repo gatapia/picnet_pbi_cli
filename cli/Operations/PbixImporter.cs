@@ -48,6 +48,7 @@ namespace cli.Operations {
     }
 
     private bool ShouldConvertToYaml(string contents) {
+      if (!Constants.USE_YAML_FOR_EMBEDDED_JSON) return false;
       return contents.IndexOf(":\"{", StringComparison.Ordinal) >= 0;
     }
 
