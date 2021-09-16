@@ -13,7 +13,8 @@ This is a set of command line tools to make working collaboratively on Power BI 
 ## Installation
 The simplest way to install this command line tool is to download the 
 [pbi.exe](https://github.com/gatapia/picnet_pbi_cli/raw/master/pbi.exe) file from this repository, save it in an  
-appropriate location and add that to location your path.
+appropriate location and add that to location your path.  Note: this assumes that you have the .Net Framework Runtime installed (which
+most modern Windows machines do).
 
 ## Overview
 Unfortunately the Power BI `pbix` file format is a binary file format making it incompatible with:
@@ -60,8 +61,7 @@ I.e. importing a pbix will overwrite the contents of the output directory with w
 `pbi export -d <source-dir> -f <pbix-filename> -m <data-model>`
 Where:
 - source-dir [optional="src"]: the name of the directory to extract the pbix contents into
-- pbix-filename [required]: the name of the file to import.  If omitted then the single pbix file in the current directory 
-        is assumed.  Otherwise an error will be displayed.
+- pbix-filename [required]: the name of the file to import. 
 - data-model [optional="default"]: the data model to use
 
 This command creates a `pbix` file from the specified `source-dir`.  This file can then be edited in Power BI Desktop.
@@ -72,8 +72,7 @@ I.e. importing a pbix will overwrite the contents of the output directory with w
 ### Extract Data Model
 `pbi data -f <pbix-filename> -d <source-dir> -d <data-model>`
 Where:
-- pbix-filename [required]: the name of the file to import. If omitted then the single pbix file in the current directory 
-        is assumed.  Otherwise an error will be displayed.
+- pbix-filename [required]: the name of the file to import. 
 - source-dir [optional="src"]: the name of the directory to extract the pbix contents into
 - data-model [optional="default"]: the alias to use for this data model 
 
