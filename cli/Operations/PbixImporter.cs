@@ -11,7 +11,6 @@ namespace cli.Operations {
       if (String.IsNullOrEmpty(opts.File)) throw new Exception($"the import command requires the -f file_name.pbix parameter");
       if (!File.Exists(opts.File)) { throw new FileNotFoundException($"could not find the specified pbix file \"{opts.File}\""); }
       var dir = Directory.CreateDirectory(opts.Dir);
-      
       ZipFile.ExtractToDirectory(opts.File, dir.FullName, true);
       CreateGitIgnoreFile(dir);
       FormatFiles(dir);
@@ -32,13 +31,24 @@ namespace cli.Operations {
       dir.GetFiles("*.*", SearchOption.AllDirectories).
           Where(PbixHelpers.IsValidSourceFile).
           ToList().
-          ForEach(f => File.WriteAllText(f.FullName, FormatFileContents(f), Encoding.UTF8));
+          ForEach(WriteFileContents);
     }
 
-    private string FormatFileContents(FileInfo f) {
+    private void WriteFileContents(FileInfo f) {
       var encoder = PbixHelpers.GetFileEncoding(f);
       var contents = File.ReadAllText(f.FullName, encoder);
-      return PbixHelpers.FormatFileContentsImpl(f, contents, true);
+      if (ShouldConvertToYaml(contents)) {
+        var formatted = PbixHelpers.ConvertJsonToYaml(contents);
+        File.WriteAllText(f.FullName + ".yaml", formatted, Encoding.UTF8);
+        f.Delete();
+      } else { 
+        var formatted = PbixHelpers.FormatFileContentsImpl(f, contents, true);
+        File.WriteAllText(f.FullName, formatted, Encoding.UTF8);
+      }
+    }
+
+    private bool ShouldConvertToYaml(string contents) {
+      return contents.IndexOf(":\"{", StringComparison.Ordinal) >= 0;
     }
 
     private void MoveDataModelFile(DirectoryInfo dir, string name)
