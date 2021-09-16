@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 namespace cli.Operations {
+  [Operation("import")]
   public class PbixImporter : IRun {
 
     public void Run(CliOptions opts) { 

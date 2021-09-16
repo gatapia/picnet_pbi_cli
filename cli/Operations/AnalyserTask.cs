@@ -6,6 +6,7 @@ using System.Text;
 using cli.Operations.Analyser;
 
 namespace cli.Operations {
+  [Operation("analyze")]
   public class AnalyserTask : IRun {
 
     private static readonly string[] PBI_DIRS = {

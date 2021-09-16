@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using YamlDotNet.Serialization;
 
 namespace cli.Operations {
+  [Operation("export")]
   public class PbixExporter : IRun 
   {
 

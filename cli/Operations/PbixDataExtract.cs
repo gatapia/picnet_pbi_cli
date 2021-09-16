@@ -5,6 +5,7 @@ using Ionic.Zip;
 
 namespace cli.Operations
 {
+  [Operation("data")]
   public class PbixDataExtract : IRun 
   {
 

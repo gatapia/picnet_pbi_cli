@@ -4,6 +4,7 @@ using System.IO.Compression;
 using System.Linq;
 
 namespace cli.Operations {
+  [Operation("debug")]
   public class PbixDebugger : IRun {
 
     public void Run(CliOptions opts) { 
